@@ -1,4 +1,5 @@
 package Fill;
 
-public class RandomFiller {
+
+public class RandomFiller implements DataFiller{
 }

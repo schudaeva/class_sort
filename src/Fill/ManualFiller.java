@@ -1,4 +1,4 @@
 package Fill;
 
-public class ManualFiller {
+public class ManualFiller implements DataFiller{
 }

@@ -1,4 +1,4 @@
 package Sort;
 
-public class SortByYearStrategy {
+public class SortByYearStrategy implements SortStrategy {
 }

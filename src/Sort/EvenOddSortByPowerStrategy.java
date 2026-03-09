@@ -1,4 +1,4 @@
 package Sort;
 
-public class EvenOddSortByPowerStrategy {
+public class EvenOddSortByPowerStrategy implements SortStrategy {
 }
