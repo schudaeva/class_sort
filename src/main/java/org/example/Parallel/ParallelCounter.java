@@ -1,4 +1,4 @@
-package Parallel;
+package org.example.Parallel;
 
 public class ParallelCounter {
 }
