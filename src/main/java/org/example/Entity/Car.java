@@ -1,4 +1,4 @@
-package Entity;
+package org.example.Entity;
 
 public class Car {
     private final int power;      // Мощность
