@@ -34,11 +34,6 @@ public class Menu {
         registerDefaultFillers();
     }
 
-    // Для тестов с подменой Scanner
-    public Menu(Scanner scanner) {
-        this();
-        this.scanner = scanner;
-    }
 
     private void registerDefaultStrategies() {
         //все доступные стратегии сортировки
