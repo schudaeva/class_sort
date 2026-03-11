@@ -1,6 +1,6 @@
 package org.example.Entity;
 
-public class Car {
+public class Car implements Sortable{
     private final int power;      // Мощность
     private final String model;    // Модель
     private final int year;        // Год выпуска
@@ -9,6 +9,60 @@ public class Car {
         this.power = builder.power;
         this.model = builder.model;
         this.year = builder.year;
+    }
+    @Override
+    public int getNumericField(String fieldName) {
+        return switch (fieldName) {
+            case "power" -> power;
+            case "year" -> year;
+            default -> throw new IllegalArgumentException(
+                    "Неизвестное числовое поле: " + fieldName +
+                            ". Доступные поля: power, year");
+        };
+    }
+
+    @Override
+    public String getStringField(String fieldName) {
+        if ("model".equals(fieldName)) {
+            return model;
+        }
+        throw new IllegalArgumentException(
+                "Неизвестное строковое поле: " + fieldName +
+                        ". Доступное поле: model");
+    }
+
+    @Override
+    public String toFileString() {
+        return power + "," + model + "," + year;
+    }
+
+    @Override
+    public boolean isValid() {
+        return power > 0 && model != null && !model.trim().isEmpty()
+                && year >= 1886 && year <= 2026;
+    }
+
+    @Override
+    public String[] getAvailableNumericFields() {
+        return new String[]{"power", "year"};
+    }
+
+    @Override
+    public String[] getAvailableStringFields() {
+        return new String[]{"model"};
+    }
+
+    // Статический метод для создания из строки
+    public static Car fromFileString(String line) {
+        String[] parts = line.split(",");
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Invalid line: " + line);
+        }
+        return new Car.Builder()
+                .power(Integer.parseInt(parts[0]))
+                .model(parts[1])
+                .year(Integer.parseInt(parts[2]))
+                .build();
     }
 
     public int getPower() { return power; }
