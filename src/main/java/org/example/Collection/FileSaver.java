@@ -1,29 +1,29 @@
 package org.example.Collection;
-
-import org.example.Entity.Sortable;
-
-public class FileSaver {
-    public static void appendToFile(String filename, Sortable[] items) {
-        //Сохраняет массив Sortable объектов в файл (режим добавления)
-    }
-    public static void appendToFile(String filename, SortableCollection collection) {
-        // Сохраняет коллекцию Sortable объектов
-        appendToFile(filename, collection.toArray());
-    }
-
-}
-
-// мой коммит:
-/*
-package Collection;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
+import org.example.Entity.Sortable;
+
 public class FileSaver {
+    public static void append(String filename, Sortable[] items) {
+        //Сохраняет массив Sortable объектов в файл (режим добавления)
+
+    }
+    public static void append(String filename, SortableCollection collection) {
+        // Сохраняет коллекцию Sortable объектов
+        append(filename, collection.toArray());
+
+    }
+
+    public <T> void append2(String filename, List<T> collection) {
+        // Сохраняет коллекцию Sortable объектов
+        Path path = Path.of(filename);
+        appendValues(path, collection);
+    }
+
 
     public <T> boolean appendValues(Path path, List<T> values) {
         return write(path, values,
@@ -50,6 +50,25 @@ public class FileSaver {
             return false;
         }
     }
+
+
+
+
+
+
+
+
+
+}
+
+// мой коммит:
+/*
+package Collection;
+
+
+
+public class FileSaver {
+
 
 
 }

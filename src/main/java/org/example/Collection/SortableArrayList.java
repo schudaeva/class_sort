@@ -2,36 +2,47 @@ package org.example.Collection;
 
 import org.example.Entity.Sortable;
 
+import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class SortableArrayList implements SortableCollection {
-    private Sortable[] elements;
+public class SortableArrayList<Entity> extends AbstractList<Entity> implements SortableCollection<Entity> {
+    private Entity[] elements;
     private int size;
 
     public SortableArrayList() {}
+
+    @Override
+    public void add(Entity item) {
+
+    }
+
+    @Override
+    public Entity get(int index) {
+        return elements[index]/*.copy()*/; // тут будет инкапсуляция, возвращать будем новый кар
+    }
+
     public SortableArrayList(Sortable[] items) {
         this.elements = Arrays.copyOf(items, items.length);
         this.size = items.length;
     }
 
 
-    @Override
     public void add(Sortable item) {
 
     }
 
-    @Override
-    public Sortable get(int index) {
-        return null;
-    }
+//
+//    public Sortable get(int index) {
+//        return null;
+//    }
 
-    @Override
+
     public int size() {
         return 0;
     }
 
-    @Override
+
     public Sortable[] toArray() {
         return new Sortable[0];
     }
@@ -40,6 +51,11 @@ public class SortableArrayList implements SortableCollection {
     public Iterator<Sortable> iterator() {
         return null;
     }
+
+//    @Override
+//    public Iterator<Sortable> iterator() {
+//        return null;
+//    }
 
 }
 

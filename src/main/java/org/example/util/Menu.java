@@ -24,6 +24,7 @@ public class Menu {
     private final List<SortStrategy> strategies;
     private final List<DataFiller> fillers;
 
+
     public Menu() {
         this.scanner = new Scanner(System.in);
         this.currentCollection = new SortableArrayList();
@@ -33,6 +34,9 @@ public class Menu {
         registerDefaultStrategies();
         registerDefaultFillers();
     }
+
+
+
 
 
     private void registerDefaultStrategies() {
@@ -180,7 +184,7 @@ public class Menu {
         System.out.print("Имя файла для сохранения: ");
         String filename = scanner.nextLine();
 
-        FileSaver.appendToFile(filename, currentCollection);
+        FileSaver.append(filename, currentCollection);
         System.out.println("Коллекция сохранена в файл: " + filename);
     }
 
