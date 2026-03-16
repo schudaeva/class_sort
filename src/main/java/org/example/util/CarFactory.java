@@ -7,6 +7,7 @@ public class CarFactory implements SortableFactory {
 
     @Override
     public Sortable createFromString(String line) {
+
         return Car.fromFileString(line);
     }
 }
