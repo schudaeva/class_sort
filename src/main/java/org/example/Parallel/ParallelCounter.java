@@ -5,6 +5,7 @@ import org.example.Entity.Sortable;
 public class ParallelCounter {
     private static final int DEFAULT_THREADS = 4;
     public static long countNumeric(Sortable[] items, String fieldName, int target) {
+        System.out.println("lalalala");
         return countNumeric(items, fieldName, target);
     }
 
