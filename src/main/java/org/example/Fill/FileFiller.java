@@ -14,10 +14,12 @@ public class FileFiller implements DataFiller {
     private final String filename;
     private final SortableFactory factory;
 
+    // Конструктор по умолчанию использует CarFactory
     public FileFiller(String filename) {
-        this(filename, new CarFactory());  // По умолчанию для Car
+        this(filename, new CarFactory());
     }
 
+    // Основной конструктор с возможностью указать свою фабрику
     public FileFiller(String filename, SortableFactory factory) {
         this.filename = filename;
         this.factory = factory;
@@ -30,16 +32,17 @@ public class FileFiller implements DataFiller {
             throw new IllegalArgumentException("Файл не найден: " + filename);
         }
         try {
-            return Files.lines(path)
-                    .limit(length)
-                    .map(this::safeParseLine)
-                    .filter(Objects::nonNull)
-                    .toArray(Sortable[]::new);
+            return Files.lines(path)           // читаем все строки файла
+                    .limit(length)             // берем только нужное количество
+                    .map(this::safeParseLine)  // преобразуем каждую строку в объект
+                    .filter(Objects::nonNull)  // пропускаем null (битые строки)
+                    .toArray(Sortable[]::new); // собираем в массив
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения файла:" + filename,e);
+            throw new RuntimeException("Ошибка чтения файла:" + filename, e);
         }
     }
 
+    // Безопасное преобразование строки в объект, при ошибке возвращает null
     private Sortable safeParseLine(String line) {
         try {
             return factory.createFromString(line);
