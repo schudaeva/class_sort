@@ -2,107 +2,71 @@ package org.example.Collection;
 
 import org.example.Entity.Sortable;
 
-import java.util.AbstractList;
 import java.util.Arrays;
-import java.util.Iterator;
 
-public class SortableArrayList<Entity> extends AbstractList<Entity> implements SortableCollection<Entity> {
-    private Entity[] elements;
+public class SortableArrayList<T extends Sortable> extends SortableCollection<T> {
+    private Object[] elements;
     private int size;
 
-    public SortableArrayList() {}
-
-    @Override
-    public void add(Entity item) {
-
+    @SuppressWarnings("unchecked")
+    public SortableArrayList() {
+        this.elements = (T[]) new Sortable[10];
+        this.size = 0;
     }
-
-    @Override
-    public Entity get(int index) {
-        return elements[index]/*.copy()*/; // тут будет инкапсуляция, возвращать будем новый кар
-    }
-
     public SortableArrayList(Sortable[] items) {
-        this.elements = Arrays.copyOf(items, items.length);
+        this.elements = Arrays.copyOf(items, items.length, items.getClass());
         this.size = items.length;
     }
 
 
-    public void add(Sortable item) {
+    @SuppressWarnings("unchecked")
+    public T get(int index) {
+        if(index >= size || index < 0) {
+            throw new IndexOutOfBoundsException();
+        }else{
+            return (T) elements[index]/*.copy()*/; // тут будет инкапсуляция, возвращать будем новый кар
+        }
+    }
+
+    public T getOrNull(int index) {
+        try{
+            return get(index);
+        }catch (IndexOutOfBoundsException e){
+            return null;
+        }
 
     }
 
-//
-//    public Sortable get(int index) {
-//        return null;
-//    }
 
-
-    public int size() {
-        return 0;
-    }
-
-
-    public Sortable[] toArray() {
-        return new Sortable[0];
-    }
 
     @Override
-    public Iterator<Sortable> iterator() {
-        return null;
+    public boolean add(T item) {
+        expandArray();
+        elements[size++] = item;
+        return true;
     }
 
-//    @Override
-//    public Iterator<Sortable> iterator() {
-//        return null;
-//    }
-
-}
-
-// my commit:
-/**
-
-import Entity.Car;
-
-import java.util.*;
-
-public class CarArrayList {
-    private Car[] elements;
-    private int size;
-
-
-    public CarArrayList() {
-        elements = new Car[10];
-    }
-
-
-    public void add(Car car){
-        if (size == elements.length) {
-            Car[] newArray = new Car[elements.length * 2];
-            System.arraycopy(elements, 0, newArray, 0, elements.length);
-            elements = newArray;
-        }
-        elements[size] = car;
-        size++;
-
-    }
-
-    public Car get(int index){
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("This collection hasn't this index!");
-        }
-        return elements[index];
-    }
-
-
-    public int size(){
+    public int size() {
         return size;
     }
 
-    public Car[] toArray(){
-        Car[] result = new Car[size];
-        System.arraycopy(elements, 0, result, 0, size);
-        return result;
+
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public T[] toArray() {
+        return (T[]) Arrays.copyOf(elements, size);
     }
 
-}*/
+    @Override
+    public boolean isEmpty() {
+        return (size == 0);
+    }
+
+    private void expandArray() {
+        if (size == elements.length) {
+            elements = Arrays.copyOf(elements, elements.length * 2);
+        }
+    }
+}
+

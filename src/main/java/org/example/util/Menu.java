@@ -1,6 +1,6 @@
 package org.example.util;
 
-import org.example.Collection.FileSaver;
+import org.example.File.FileSaver;
 import org.example.Collection.SortableArrayList;
 import org.example.Collection.SortableCollection;
 import org.example.Entity.Sortable;
@@ -19,15 +19,15 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
-    private Scanner scanner;
-    private SortableCollection currentCollection;
+    private final Scanner scanner;
+    private SortableCollection<Sortable> currentCollection;
     private final List<SortStrategy> strategies;
     private final List<DataFiller> fillers;
 
 
     public Menu() {
         this.scanner = new Scanner(System.in);
-        this.currentCollection = new SortableArrayList();
+        this.currentCollection = new SortableArrayList<>();
         this.strategies = new ArrayList<>();
         this.fillers = new ArrayList<>();
 
@@ -130,7 +130,7 @@ public class Menu {
         }
 
         Sortable[] items = filler.fill(length);
-        currentCollection = new SortableArrayList(items);
+        currentCollection = new SortableArrayList<Sortable>(items);
         System.out.println("Добавлено " + items.length + " элементов");
     }
 
@@ -157,7 +157,7 @@ public class Menu {
         SortStrategy strategy = strategies.get(choice - 1);
         Sortable[] array = currentCollection.toArray();
         strategy.sort(array);
-        currentCollection = new SortableArrayList(array);
+        currentCollection = new SortableArrayList<>(array);
 
         System.out.println("Сортировка выполнена: " + strategy.getName());
     }
@@ -183,9 +183,13 @@ public class Menu {
 
         System.out.print("Имя файла для сохранения: ");
         String filename = scanner.nextLine();
+        FileSaver file = new FileSaver();
+        if (file.append(filename, currentCollection)){
+            System.out.println("Коллекция сохранена в файл: " + filename);
+        }else{
+            System.out.println("Операция не удалась: " + filename);
+        }
 
-        FileSaver.append(filename, currentCollection);
-        System.out.println("Коллекция сохранена в файл: " + filename);
     }
 
     private void handleCount() {

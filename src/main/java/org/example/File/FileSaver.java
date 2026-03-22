@@ -1,46 +1,47 @@
-package org.example.Collection;
+package org.example.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
+import org.example.Collection.SortableCollection;
 import org.example.Entity.Sortable;
 
 public class FileSaver {
-    public static void append(String filename, Sortable[] items) {
+    /*public static void append(String filename, Sortable[] items) {
         //Сохраняет массив Sortable объектов в файл (режим добавления)
 
     }
-    public static void append(String filename, SortableCollection collection) {
+    public static void append(String filename, SortableCollection<Sortable> collection) {
         // Сохраняет коллекцию Sortable объектов
         append(filename, collection.toArray());
 
-    }
+    }*/
 
-    public <T> void append2(String filename, List<T> collection) {
+    public <T extends Sortable> boolean append(String filename, SortableCollection<T> collection) {
         // Сохраняет коллекцию Sortable объектов
         Path path = Path.of(filename);
-        appendValues(path, collection);
+        return appendValues(path, collection);
     }
 
 
-    public <T> boolean appendValues(Path path, List<T> values) {
+    public <T extends Sortable> boolean appendValues(Path path, SortableCollection<T> values) {
         return write(path, values,
                 StandardOpenOption.CREATE,
                 StandardOpenOption.APPEND);
     }
 
-    public <T> boolean writeValues(Path path, List<T> values) {
+    public <T extends Sortable> boolean writeValues(Path path, SortableCollection<T> values) {
         return write(path, values,
                 StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    private <T> boolean write(Path path, List<T> values, StandardOpenOption... options) {
+    private <T extends Sortable> boolean write(Path path, SortableCollection<T> values, StandardOpenOption... options) {
         try {
             List<String> lines = values.stream()
-                    .map(String::valueOf)
+                    .map(Sortable::toFileString)
                     .toList();
 
             Files.write(path, lines, options);
@@ -60,16 +61,3 @@ public class FileSaver {
 
 
 }
-
-// мой коммит:
-/*
-package Collection;
-
-
-
-public class FileSaver {
-
-
-
-}
-*/

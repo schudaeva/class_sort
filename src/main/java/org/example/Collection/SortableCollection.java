@@ -5,15 +5,11 @@ import org.example.Entity.*;
 
 import java.util.AbstractList;
 
-public interface SortableCollection<Entity> extends Iterable<Sortable> {                        //extends AbstractList<Car>
+public abstract class SortableCollection<T extends Sortable> extends AbstractList<T>{// Itterable уже есть в абстракт лист
 
-    void add(Entity item); // Добавляет элемент в коллекцию
-    Entity get(int index); // Возвращает элемент по индексу
-    int size();
-    Sortable[] toArray();  // Преобразует коллекцию в массив
-    default boolean isEmpty() {
-        return size() == 0;
-    }
+    public abstract T[] toArray();  // Преобразует коллекцию в массив
+    public abstract boolean isEmpty();
+
 
 
 
