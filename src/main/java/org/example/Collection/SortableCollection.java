@@ -1,13 +1,34 @@
 package org.example.Collection;
 
-import org.example.Entity.Sortable;
+import org.example.Entity.*;
 
-public interface SortableCollection extends Iterable<Sortable>  {
-    void add(Sortable item); // Добавляет элемент в коллекцию
-    Sortable get(int index); // Возвращает элемент по индексу
-    int size();
-    Sortable[] toArray();
-    default boolean isEmpty() {
-        return size() == 0;
-    } // Преобразует коллекцию в массив
+
+import java.util.AbstractList;
+
+public abstract class SortableCollection<T extends Sortable> extends AbstractList<T>{// Itterable уже есть в абстракт лист
+
+    public abstract T[] toArray();  // Преобразует коллекцию в массив
+    public abstract boolean isEmpty();
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
