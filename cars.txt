@@ -1,0 +1,6 @@
+150,Jaguar,2017
+180,Renault,2021
+120,Hyundai,2010
+-40,Tesla,2024
+abcd,Mazda,201
+110,Lada,1999
