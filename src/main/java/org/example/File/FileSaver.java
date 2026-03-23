@@ -47,7 +47,8 @@ public class FileSaver {
             Files.write(path, lines, options);
             return true;
         } catch (IOException e) {
-            // Здесь типа должно быть логирование, например через logback, но мне пока рано это изучать
+            // Здесь типа должно быть логирование, например через logback, но мне пока рано это изучать, пока что:
+            System.err.println("Ошибка записи в файл " + path + ": " + e.getMessage());
             return false;
         }
     }
