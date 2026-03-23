@@ -2,23 +2,79 @@ package org.example.Sort;
 import org.example.Entity.Sortable;
 
 public class EvenOddSortStrategy implements SortStrategy {
+    private final String fieldName;
+
+    public EvenOddSortStrategy() {
+        this("power");
+    }
+
+    public EvenOddSortStrategy(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
 
     @Override
     public void sort(Sortable[] items) {
-        for (int i = 0; i < items.length - 1; i++) {
-            for (int j = 0; j < items.length - i - 1; j++) {
+        if (items == null || items.length <= 1) {
+            return;
+        }
 
-                int a = (int) items[j].getFieldValue("power");
-                int b = (int) items[j + 1].getFieldValue("power");
+        // Собираем четные значения и их индексы
+        int[] evenValues = new int[items.length];
+        int[] evenIndices = new int[items.length];
+        int evenCount = 0;
 
-                // сортируем только если ОБА четные
-                if (a % 2 == 0 && b % 2 == 0) {
-                    if (a > b) {
-                        swap(items, j, j + 1);
-                    }
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] == null || !items[i].isValid()) {
+                continue;
+            }
+
+            int value = items[i].getNumericField(fieldName);
+            if (value % 2 == 0) {
+                evenValues[evenCount] = value;
+                evenIndices[evenCount] = i;
+                evenCount++;
+            }
+        }
+
+        // Сортируем четные значения (пузырьком)
+        for (int i = 0; i < evenCount - 1; i++) {
+            for (int j = 0; j < evenCount - i - 1; j++) {
+                if (evenValues[j] > evenValues[j + 1]) {
+                    int temp = evenValues[j];
+                    evenValues[j] = evenValues[j + 1];
+                    evenValues[j + 1] = temp;
                 }
             }
         }
+
+        // Создаем новые объекты с отсортированными четными значениями
+        for (int i = 0; i < evenCount; i++) {
+            int index = evenIndices[i];
+            int newValue = evenValues[i];
+            items[index] = createCopyWithField(items[index], fieldName, newValue);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Sortable createCopyWithField(Sortable original, String fieldName, int newValue) {
+        if (original instanceof org.example.Entity.Car car) {
+            if ("power".equals(fieldName)) {
+                return new org.example.Entity.Car.Builder()
+                        .power(newValue)
+                        .model(car.getModel())
+                        .year(car.getYear())
+                        .build();
+            } else if ("year".equals(fieldName)) {
+                return new org.example.Entity.Car.Builder()
+                        .power(car.getPower())
+                        .model(car.getModel())
+                        .year(newValue)
+                        .build();
+            }
+        }
+        throw new UnsupportedOperationException("Cannot copy field for: " +
+                original.getClass().getSimpleName());
     }
 
     private void swap(Sortable[] items, int i, int j) {

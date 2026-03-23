@@ -277,7 +277,6 @@ public class Menu {
         System.out.print("Выберите поле:  ");
 
         int choice = readInt();
-        Sortable[] array = currentCollection.toArray();
 
         switch (choice) {
             case 0:
@@ -290,7 +289,7 @@ public class Menu {
                     System.out.println("Мощность должна быть положительной");
                     break;
                 }
-                long powerCount = ParallelCounter.countNumeric(array, "power", power);
+                long powerCount = ParallelCounter.countNumeric(currentCollection, "power", power);
                 System.out.println("Найдено автомобилей с мощностью " + power + ": " + powerCount);
                 break;
             case 2:
@@ -300,7 +299,7 @@ public class Menu {
                     System.out.println("Модель не может быть пустой");
                     break;
                 }
-                long modelCount = ParallelCounter.countString(array, "model", model);
+                long modelCount = ParallelCounter.countString(currentCollection, "model", model);
                 System.out.println("Найдено автомобилей модели " + model + ": " + modelCount);
                 break;
             case 3:
@@ -310,7 +309,7 @@ public class Menu {
                     System.out.println("Некорректный год");
                     break;
                 }
-                long yearCount = ParallelCounter.countNumeric(array, "year", year);
+                long yearCount = ParallelCounter.countNumeric(currentCollection, "year", year);
                 System.out.println("Найдено автомобилей " + year + " года: " + yearCount);
                 break;
             default:

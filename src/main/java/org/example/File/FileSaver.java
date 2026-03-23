@@ -55,6 +55,7 @@ public class FileSaver {
             return true;
         } catch (IOException e) {
             // Здесь типа должно быть логирование, например через logback, но мне пока рано это изучать
+            System.err.println("Ошибка записи в файл " + path + ": " + e.getMessage());
             return false;
         }
     }

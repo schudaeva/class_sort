@@ -1,5 +1,6 @@
 package org.example.Parallel;
 
+import org.example.Collection.SortableCollection;
 import org.example.Entity.Sortable;
 
 import java.util.ArrayList;
@@ -8,8 +9,27 @@ import java.util.List;
 public class ParallelCounter {
     private static final int DEFAULT_THREAD_COUNT = Runtime.getRuntime().availableProcessors();
 
+
     public static long countNumeric(Sortable[] items, String fieldName, int target) {
         return countNumeric(items, fieldName, target, DEFAULT_THREAD_COUNT);
+    }
+
+    public static long countNumeric(SortableCollection<? extends Sortable> collection,
+                                    String fieldName, int target) {
+        if (collection == null || collection.isEmpty()) {
+            return 0;
+        }
+        Sortable[] array = collection.toArray();
+        return countNumeric(array, fieldName, target);
+    }
+
+    public static long countNumeric(SortableCollection<? extends Sortable> collection,
+                                    String fieldName, int target, int threadCount) {
+        if (collection == null || collection.isEmpty()) {
+            return 0;
+        }
+        Sortable[] array = collection.toArray();
+        return countNumeric(array, fieldName, target, threadCount);
     }
 
     public static long countNumeric(Sortable[] items, String fieldName, int target, int threadCount) {
@@ -55,6 +75,23 @@ public class ParallelCounter {
         return countString(items, fieldName, target, DEFAULT_THREAD_COUNT);
     }
 
+    public static long countString(SortableCollection<? extends Sortable> collection,
+                                   String fieldName, String target) {
+        if (collection == null || collection.isEmpty() || target == null) {
+            return 0;
+        }
+        Sortable[] array = collection.toArray();
+        return countString(array, fieldName, target);
+    }
+
+    public static long countString(SortableCollection<? extends Sortable> collection,
+                                   String fieldName, String target, int threadCount) {
+        if (collection == null || collection.isEmpty() || target == null) {
+            return 0;
+        }
+        Sortable[] array = collection.toArray();
+        return countString(array, fieldName, target, threadCount);
+    }
     public static long countString(Sortable[] items, String fieldName, String target, int threadCount) {
         if (items == null || items.length == 0 || target == null) {
             return 0;
