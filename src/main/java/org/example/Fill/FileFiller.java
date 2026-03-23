@@ -1,5 +1,6 @@
 package org.example.Fill;
 
+import org.example.Collection.SortableArrayList;
 import org.example.Entity.Sortable;
 import org.example.util.CarFactory;
 import org.example.util.SortableFactory;
@@ -26,17 +27,19 @@ public class FileFiller implements DataFiller {
     }
 
     @Override
-    public Sortable[] fill(int length) {
+    public SortableArrayList<Sortable> fill(int length) {
         Path path = Paths.get(filename);
         if (!Files.exists(path)) {
             throw new IllegalArgumentException("Файл не найден: " + filename);
         }
+        SortableArrayList<Sortable> collection = new SortableArrayList<>();
         try {
-            return Files.lines(path)           // читаем все строки файла
+            Files.lines(path)           // читаем все строки файла
                     .limit(length)             // берем только нужное количество
                     .map(this::safeParseLine)  // преобразуем каждую строку в объект
                     .filter(Objects::nonNull)  // пропускаем null (битые строки)
-                    .toArray(Sortable[]::new); // собираем в массив
+                    .forEach(collection::add); // собираем в массив
+            return collection;
         } catch (IOException e) {
             throw new RuntimeException("Ошибка чтения файла:" + filename, e);
         }

@@ -1,13 +1,14 @@
 package org.example.Fill;
 
 
+import org.example.Collection.SortableArrayList;
 import org.example.Entity.Car;
 import org.example.Entity.Sortable;
 
 import java.util.Random;
 import java.util.stream.Stream;
 
-public class RandomFiller implements DataFiller{
+public class RandomFiller implements DataFiller {
 
     // Диапазон значений для мощности автомобиля
     private static final int MIN_POWER = 50;
@@ -28,10 +29,13 @@ public class RandomFiller implements DataFiller{
 
     // Заполняет массив случайно сгенерированными автомобилями
     @Override
-    public Sortable[] fill(int length) {
-       return Stream.generate(this::generateRandomCar)
-               .limit(length)
-               .toArray(Sortable[]::new);
+    public SortableArrayList<Sortable> fill(int length) {
+        SortableArrayList<Sortable> collection = new SortableArrayList<>();
+        Stream.generate(this::generateRandomCar)
+                .limit(length)
+                .forEach(collection::add);
+
+        return collection;
     }
 
     // Генерирует один случайный автомобиль

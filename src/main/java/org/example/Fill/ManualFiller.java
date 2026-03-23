@@ -1,5 +1,6 @@
 package org.example.Fill;
 
+import org.example.Collection.SortableArrayList;
 import org.example.Entity.Car;
 import org.example.Entity.Sortable;
 
@@ -15,8 +16,8 @@ public class ManualFiller implements DataFiller{
 
     // Заполняет массив объектами, введенными пользователем вручную
     @Override
-    public Sortable[] fill(int length) {
-        Sortable[] arrayCar = new Sortable[length];
+    public SortableArrayList<Sortable> fill(int length) {
+        SortableArrayList<Sortable> collection = new SortableArrayList<>();
         System.out.println("Введите машины: " + length);
 
         // Цикл ввода данных для каждой машины
@@ -24,12 +25,12 @@ public class ManualFiller implements DataFiller{
             System.out.println("Автомобиль " + (i+1) + " из " + length);
 
             Car car = inputCar();
-            arrayCar[i] = car;
+            collection.add(car);
 
             System.out.println("\n" + car + "\n");
         }
 
-        return arrayCar;
+        return collection;
     }
 
     // Метод для ввода данных одного автомобиля с валидацией

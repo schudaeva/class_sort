@@ -35,12 +35,7 @@ public class Menu {
         registerDefaultFillers();
     }
 
-
-
-
-
     private void registerDefaultStrategies() {
-        //все доступные стратегии сортировки
         strategies.add(new SortByNumericFieldStrategy("power", true));
         strategies.add(new SortByNumericFieldStrategy("power", false));
         strategies.add(new SortByStringFieldStrategy("model", true));
@@ -154,9 +149,10 @@ public class Menu {
             return;
         }
 
-        Sortable[] items = filler.fill(length);
-        currentCollection = new SortableArrayList<>(items);
-        System.out.println("Добавлено " + items.length + " элементов");
+
+        SortableArrayList<Sortable> collection = filler.fill(length);
+        currentCollection = collection;
+        System.out.println("Добавлено " + collection.size() + " элементов");
     }
 
     private void handleSort() {
@@ -171,7 +167,6 @@ public class Menu {
             System.out.println((i + 1) + ". " + strategies.get(i).getName());
         }
         System.out.println("0. Вернуться в главное меню");
-
 
         System.out.print("Выберите стратегию: ");
         int choice = readInt();
@@ -222,6 +217,8 @@ public class Menu {
             System.out.println("Имя файла не может быть пустым");
             return;
         }
+
+
         boolean fileExists = java.nio.file.Files.exists(java.nio.file.Paths.get(filename));
 
         String mode;
@@ -239,7 +236,7 @@ public class Menu {
             if (choice == 0) {
                 System.out.println("Возврат в главное меню.");
                 return;
-            } else if  (choice == 1) {
+            } else if (choice == 1) {
                 mode = "добавление";
             } else if (choice == 2) {
                 mode = "перезапись";
@@ -263,7 +260,6 @@ public class Menu {
         } else {
             System.out.println("Ошибка при сохранении в файл: " + filename);
         }
-
     }
 
     private void handleCount() {
@@ -285,8 +281,8 @@ public class Menu {
 
         switch (choice) {
             case 0:
-                    System.out.println("Возврат в главное меню.");
-                    break;
+                System.out.println("Возврат в главное меню.");
+                break;
             case 1:
                 System.out.print("Искомая мощность: ");
                 int power = readInt();
@@ -310,7 +306,7 @@ public class Menu {
             case 3:
                 System.out.print("Искомый год: ");
                 int year = readInt();
-                if (year < 1886 || year > 2026) { // Первый авто - 1886
+                if (year < 1886 || year > 2026) {
                     System.out.println("Некорректный год");
                     break;
                 }
