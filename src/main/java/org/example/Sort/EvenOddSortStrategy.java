@@ -29,6 +29,6 @@ public class EvenOddSortStrategy implements SortStrategy {
 
     @Override
     public String getName() {
-        return "Even/Odd Sort by Power";
+        return "Сортировка четных значений по мощности";
     }
 }

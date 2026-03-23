@@ -41,6 +41,6 @@ public class SortByNumericFieldStrategy implements SortStrategy {
 
     @Override
     public String getName() {
-        return "Sort by " + fieldName + (ascending ? " ASC" : " DESC");
+        return "Сортировка по " + fieldName + (ascending ? " ASC" : " DESC");
     }
 }

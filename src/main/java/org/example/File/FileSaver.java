@@ -32,6 +32,13 @@ public class FileSaver {
                 StandardOpenOption.APPEND);
     }
 
+    public <T extends Sortable> boolean writeValues(String filename, SortableCollection<T> values) {
+        Path path = Path.of(filename);
+        return write(path, values,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
     public <T extends Sortable> boolean writeValues(Path path, SortableCollection<T> values) {
         return write(path, values,
                 StandardOpenOption.CREATE,
@@ -51,13 +58,4 @@ public class FileSaver {
             return false;
         }
     }
-
-
-
-
-
-
-
-
-
 }

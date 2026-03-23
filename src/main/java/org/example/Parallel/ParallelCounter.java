@@ -111,6 +111,17 @@ public class ParallelCounter {
         @Override
         public void run() {
             for (int i = start; i < end; i++) {
+                Sortable item = items[i];
+
+                // Проверка на null
+                if (item == null) {
+                    continue;
+                }
+
+                // Проверка на валидность объекта
+                if (!item.isValid()) {
+                    continue;
+                }
                 if (items[i] != null) {
                     try {
                         if (items[i].getNumericField(fieldName) == target) {
@@ -148,6 +159,17 @@ public class ParallelCounter {
         public void run() {
             for (int i = start; i < end; i++) {
                 if (items[i] != null && target != null) {
+                    Sortable item = items[i];
+
+                    // Проверка на null
+                    if (item == null) {
+                        continue;
+                    }
+
+                    // Проверка на валидность объекта
+                    if (!item.isValid()) {
+                        continue;
+                    }
                     try {
                         String value = items[i].getStringField(fieldName);
                         if (target.equals(value)) {

@@ -17,7 +17,7 @@ public class ManualFiller implements DataFiller{
     @Override
     public Sortable[] fill(int length) {
         Sortable[] arrayCar = new Sortable[length];
-        System.out.println("Введите количество машин: " + length);
+        System.out.println("Введите машины: " + length);
 
         // Цикл ввода данных для каждой машины
         for (int i = 0; i < length; i++) {
@@ -60,5 +60,10 @@ public class ManualFiller implements DataFiller{
                 System.out.println("Ошибка: " + e.getMessage() + "!" + " Введите данные заново");
             }
         }
+    }
+
+    @Override
+    public String getName() {
+        return "Заполнение вручную";
     }
 }

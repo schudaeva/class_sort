@@ -51,4 +51,9 @@ public class RandomFiller implements DataFiller{
                 .year(year)
                 .build();
     }
+
+    @Override
+    public String getName() {
+        return "Заполнение рандомными значениями";
+    }
 }

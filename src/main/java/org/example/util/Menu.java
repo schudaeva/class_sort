@@ -63,7 +63,7 @@ public class Menu {
 
             switch (choice) {
                 case 0:
-                    System.out.println("Выход из программы...");
+                    System.out.println("Выход из программы");
                     return;
                 case 1:
                     handleFill();
@@ -105,17 +105,42 @@ public class Menu {
             System.out.println((i + 1) + ". " + fillers.get(i).getName());
         }
         System.out.println((fillers.size() + 1) + ". Из файла");
+        System.out.println("0. Вернуться в главное меню");
 
         System.out.print("Выберите способ: ");
         int choice = readInt();
+
+        if (choice == 0) {
+            System.out.println("Возврат в главное меню");
+            return;
+        }
 
         DataFiller filler;
         if (choice >= 1 && choice <= fillers.size()) {
             filler = fillers.get(choice - 1);
         } else if (choice == fillers.size() + 1) {
-            System.out.print("Имя файла: ");
-            String filename = scanner.nextLine();
-            filler = new FileFiller(filename);
+            while (true) {
+                System.out.print("Введите имя файла (для выхода введите 0): ");
+                String filename = scanner.nextLine().trim();
+
+                if (filename.equals("0")) {
+                    System.out.println("Возврат в главное меню");
+                    return;
+                }
+
+                if (filename.isEmpty()) {
+                    System.out.println("Имя файла не может быть пустым");
+                    continue;
+                }
+                java.nio.file.Path path = java.nio.file.Paths.get(filename);
+                if (java.nio.file.Files.exists(path) && !java.nio.file.Files.isDirectory(path)) {
+                    filler = new FileFiller(filename);
+                    break;
+                } else {
+                    System.out.println("Файл не найден: " + filename);
+                    System.out.println("Проверьте имя файла и попробуйте снова.");
+                }
+            }
         } else {
             System.out.println("Неверный выбор");
             return;
@@ -130,13 +155,13 @@ public class Menu {
         }
 
         Sortable[] items = filler.fill(length);
-        currentCollection = new SortableArrayList<Sortable>(items);
+        currentCollection = new SortableArrayList<>(items);
         System.out.println("Добавлено " + items.length + " элементов");
     }
 
     private void handleSort() {
         if (currentCollection.isEmpty()) {
-            System.out.println("Коллекция пуста. Сначала заполните её.");
+            System.out.println("Коллекция пуста");
             return;
         }
 
@@ -145,9 +170,15 @@ public class Menu {
         for (int i = 0; i < strategies.size(); i++) {
             System.out.println((i + 1) + ". " + strategies.get(i).getName());
         }
+        System.out.println("0. Вернуться в главное меню");
+
 
         System.out.print("Выберите стратегию: ");
         int choice = readInt();
+        if (choice == 0) {
+            System.out.println("Возврат в главное меню");
+            return;
+        }
 
         if (choice < 1 || choice > strategies.size()) {
             System.out.println("Неверный выбор");
@@ -168,7 +199,7 @@ public class Menu {
             return;
         }
 
-        System.out.println("\nСодержимое коллекции (" + currentCollection.size() + " элементов) ---");
+        System.out.println("\nСодержимое коллекции (" + currentCollection.size() + " элементов)");
         int i = 0;
         for (Sortable item : currentCollection) {
             System.out.printf("%3d: %s%n", ++i, item.toString());
@@ -177,17 +208,60 @@ public class Menu {
 
     private void handleSaveToFile() {
         if (currentCollection.isEmpty()) {
-            System.out.println("Коллекция пуста. Нечего сохранять.");
+            System.out.println("Коллекция пуста");
             return;
         }
 
-        System.out.print("Имя файла для сохранения: ");
-        String filename = scanner.nextLine();
-        FileSaver file = new FileSaver();
-        if (file.append(filename, currentCollection)){
-            System.out.println("Коллекция сохранена в файл: " + filename);
-        }else{
-            System.out.println("Операция не удалась: " + filename);
+        System.out.print("Введите имя файла (для выхода введите 0): ");
+        String filename = scanner.nextLine().trim();
+        if (filename.equals("0")) {
+            System.out.println("Возврат в главное меню");
+            return;
+        }
+        if (filename.isEmpty()) {
+            System.out.println("Имя файла не может быть пустым");
+            return;
+        }
+        boolean fileExists = java.nio.file.Files.exists(java.nio.file.Paths.get(filename));
+
+        String mode;
+        if (!fileExists) {
+            mode = "создание";
+            System.out.println("Файл не найден. Будет создан новый файл.");
+        } else {
+            System.out.println("Файл уже существует. Выберите режим сохранения:");
+            System.out.println("1. Добавить в конец файла");
+            System.out.println("2. Перезаписать файл");
+            System.out.println("0. Вернуться в главное меню");
+            System.out.print("Выбор: ");
+
+            int choice = readInt();
+            if (choice == 0) {
+                System.out.println("Возврат в главное меню.");
+                return;
+            } else if  (choice == 1) {
+                mode = "добавление";
+            } else if (choice == 2) {
+                mode = "перезапись";
+            } else {
+                System.out.println("Неверный выбор. Сохранение отменено.");
+                return;
+            }
+        }
+
+        FileSaver fileSaver = new FileSaver();
+        boolean success;
+
+        if (mode.equals("перезапись") || (!fileExists)) {
+            success = fileSaver.writeValues(filename, currentCollection);
+        } else {
+            success = fileSaver.append(filename, currentCollection);
+        }
+
+        if (success) {
+            System.out.println("Коллекция сохранена в файл: " + filename + " (режим: " + mode + ")");
+        } else {
+            System.out.println("Ошибка при сохранении в файл: " + filename);
         }
 
     }
@@ -203,26 +277,43 @@ public class Menu {
         System.out.println("1. По мощности");
         System.out.println("2. По модели");
         System.out.println("3. По году");
-        System.out.print("Выберите поле > ");
+        System.out.println("0. Вернуться в главное меню");
+        System.out.print("Выберите поле:  ");
 
         int choice = readInt();
         Sortable[] array = currentCollection.toArray();
 
         switch (choice) {
+            case 0:
+                    System.out.println("Возврат в главное меню.");
+                    break;
             case 1:
                 System.out.print("Искомая мощность: ");
                 int power = readInt();
+                if (power <= 0) {
+                    System.out.println("Мощность должна быть положительной");
+                    break;
+                }
                 long powerCount = ParallelCounter.countNumeric(array, "power", power);
                 System.out.println("Найдено автомобилей с мощностью " + power + ": " + powerCount);
                 break;
             case 2:
                 System.out.print("Искомая модель: ");
                 String model = scanner.nextLine();
-                System.out.println("Подсчет по модели пока не реализован");
+                if (model == null || model.trim().isEmpty()) {
+                    System.out.println("Модель не может быть пустой");
+                    break;
+                }
+                long modelCount = ParallelCounter.countString(array, "model", model);
+                System.out.println("Найдено автомобилей модели " + model + ": " + modelCount);
                 break;
             case 3:
                 System.out.print("Искомый год: ");
                 int year = readInt();
+                if (year < 1886 || year > 2026) { // Первый авто - 1886
+                    System.out.println("Некорректный год");
+                    break;
+                }
                 long yearCount = ParallelCounter.countNumeric(array, "year", year);
                 System.out.println("Найдено автомобилей " + year + " года: " + yearCount);
                 break;
