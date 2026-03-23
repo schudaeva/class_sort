@@ -1,7 +1,7 @@
 package org.example.Sort;
 import org.example.Entity.Sortable;
 
-public class EvenOddSortByPowerStrategy implements SortStrategy {
+public class EvenOddSortStrategy implements SortStrategy {
 
     @Override
     public void sort(Sortable[] items) {

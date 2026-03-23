@@ -47,7 +47,7 @@ public class Menu {
         strategies.add(new SortByStringFieldStrategy("model", false));
         strategies.add(new SortByNumericFieldStrategy("year", true));
         strategies.add(new SortByNumericFieldStrategy("year", false));
-        strategies.add(new EvenOddSortStrategy("power"));
+        strategies.add(new EvenOddSortStrategy());
     }
 
     private void registerDefaultFillers() {
