@@ -16,6 +16,7 @@ public interface Sortable {
     default String[] getAvailableStringFields() {
         return new String[]{};
     }
+    Sortable copy();
 
     Object getFieldValue(String fieldName);
 }

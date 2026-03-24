@@ -1,5 +1,5 @@
 package org.example.Sort;
-import org.example.Entity.Sortable;
+import org.example.Entity.*;
 
 public class EvenOddSortStrategy implements SortStrategy {
     private final String fieldName;
@@ -56,25 +56,27 @@ public class EvenOddSortStrategy implements SortStrategy {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private Sortable createCopyWithField(Sortable original, String fieldName, int newValue) {
-        if (original instanceof org.example.Entity.Car car) {
+        if (original instanceof Car car) {
+            Car copy = (Car) car.copy();  // создаем копию
+
+            // Возвращаем копию (метод copy() уже создал объект)
+            // Но для изменения поля все равно нужен Builder
             if ("power".equals(fieldName)) {
-                return new org.example.Entity.Car.Builder()
+                return new Car.Builder()
                         .power(newValue)
-                        .model(car.getModel())
-                        .year(car.getYear())
+                        .model(copy.getModel())
+                        .year(copy.getYear())
                         .build();
             } else if ("year".equals(fieldName)) {
-                return new org.example.Entity.Car.Builder()
-                        .power(car.getPower())
-                        .model(car.getModel())
+                return new Car.Builder()
+                        .power(copy.getPower())
+                        .model(copy.getModel())
                         .year(newValue)
                         .build();
             }
         }
-        throw new UnsupportedOperationException("Cannot copy field for: " +
-                original.getClass().getSimpleName());
+        throw new UnsupportedOperationException();
     }
 
     private void swap(Sortable[] items, int i, int j) {

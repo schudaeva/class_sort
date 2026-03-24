@@ -52,6 +52,15 @@ public class Car implements Sortable{
         return new String[]{"model"};
     }
 
+    @Override
+    public Sortable copy() {
+        return new Car.Builder()
+                .power(this.power)
+                .model(this.model)
+                .year(this.year)
+                .build();
+    }
+
     // Статический метод для создания из строки
     public static Car fromFileString(String line) {
         String[] parts = line.split(",");
@@ -115,15 +124,11 @@ public class Car implements Sortable{
 
     @Override
     public Object getFieldValue(String fieldName) {
-        switch (fieldName) {
-            case "power":
-                return power;
-            case "model":
-                return model;
-            case "year":
-                return year;
-            default:
-                throw new IllegalArgumentException("Unknown field: " + fieldName);
-        }
+        return switch (fieldName) {
+            case "power" -> power;
+            case "model" -> model;
+            case "year" -> year;
+            default -> throw new IllegalArgumentException("Unknown field: " + fieldName);
+        };
     }
 }
