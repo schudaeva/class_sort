@@ -29,7 +29,8 @@ public class JsonManager {
                         elementAdapter, creatingCollection)
         ).create();
 
-        this.type = new TypeToken<SortableCollection<Sortable>[]>(){}.getType();
+        this.type = new TypeToken<SortableCollection<Sortable>[]>() {
+        }.getType();
 
     }
 
@@ -48,6 +49,7 @@ public class JsonManager {
             throw new RuntimeException(e);
         }
     }
+
     public <T extends Sortable> void save(SortableCollection<T> object) {
         clear();
         append(object);
@@ -74,7 +76,8 @@ public class JsonManager {
 
         try (Reader reader = new FileReader(file)) {
             existing = gson.fromJson(reader, type);
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
 
         int oldLength = existing != null ? existing.length : 0;
 
@@ -87,14 +90,14 @@ public class JsonManager {
         write(result);
     }
 
-    public void appendValues(Sortable entity, int indexCollection){
+    public void appendValues(Sortable entity, int indexCollection) {
         SortableCollection<Sortable>[] array = loadArray();
-        if(array.length > indexCollection){
+        if (array.length > indexCollection) {
             SortableCollection<Sortable> collection = array[indexCollection];
             collection.add(entity);
             array[indexCollection] = collection;
             write(array);
-        } else{
+        } else {
             System.err.println("Не удалось найти коллекцию с номером " + indexCollection);
         }
 
@@ -107,6 +110,7 @@ public class JsonManager {
             throw new RuntimeException(e);
         }
     }
+
     public <T extends Sortable> SortableCollection<T> load() {
         try {
             return (SortableCollection<T>) loadArray()[0];
@@ -129,7 +133,7 @@ public class JsonManager {
         }
     }
 
-
+}
 
 /*  здесь работа с записью лишь одной коллекции. Не массива коллекций, а одной коллекции. Перед продом надо удалить.
     public <T extends Sortable> void saveCollection(SortableCollection<T> object) {
@@ -152,5 +156,5 @@ public class JsonManager {
 
  */
 
-}
+
 
