@@ -5,7 +5,7 @@ import org.example.Entity.Sortable;
 
 public interface DataFiller {
 
-    // Заполняет массив объектами Sortable указанной длины
+    // Заполняет коллекцию объектами Sortable указанной длины
     SortableArrayList<Sortable> fill(int length);
 
     // Возвращает простое имя класса (например, "RandomFiller")

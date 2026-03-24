@@ -38,7 +38,7 @@ public class FileFiller implements DataFiller {
                     .limit(length)             // берем только нужное количество
                     .map(this::safeParseLine)  // преобразуем каждую строку в объект
                     .filter(Objects::nonNull)  // пропускаем null (битые строки)
-                    .forEach(collection::add); // собираем в массив
+                    .forEach(collection::add);
             return collection;
         } catch (IOException e) {
             throw new RuntimeException("Ошибка чтения файла:" + filename, e);

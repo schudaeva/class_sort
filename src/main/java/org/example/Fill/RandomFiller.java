@@ -27,7 +27,7 @@ public class RandomFiller implements DataFiller {
 
     private final Random rand = new Random();
 
-    // Заполняет массив случайно сгенерированными автомобилями
+    // Заполняет коллекцию случайно сгенерированными автомобилями
     @Override
     public SortableArrayList<Sortable> fill(int length) {
         SortableArrayList<Sortable> collection = new SortableArrayList<>();

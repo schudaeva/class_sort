@@ -14,7 +14,7 @@ public class ManualFiller implements DataFiller{
         this.scanner = new Scanner(System.in);
     }
 
-    // Заполняет массив объектами, введенными пользователем вручную
+    // Заполняет коллекцию объектами, введенными пользователем вручную
     @Override
     public SortableArrayList<Sortable> fill(int length) {
         SortableArrayList<Sortable> collection = new SortableArrayList<>();
