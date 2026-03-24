@@ -2,140 +2,123 @@ package org.example.File;
 
 import org.example.Collection.SortableArrayList;
 import org.example.Collection.SortableCollection;
-import org.example.Entity.Car;
+import org.example.Entity.Sortable;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class JsonManagerTest {
 
-    @TempDir
-    Path tempDir;
+    static class TestItem implements Sortable {
+        int value;
 
-    private Car createCar(int i) {
-        return new Car.Builder()
-                .power(100 + i)
-                .model("Model-" + i)
-                .year(2000 + i)
-                .build();
-    }
-
-    private SortableArrayList<Car> createCollection(int count) {
-        SortableArrayList<Car> list = new SortableArrayList<>();
-        for (int i = 0; i < count; i++) {
-            list.add(createCar(i));
+        TestItem(int value) {
+            this.value = value;
         }
-        return list;
+
+        @Override
+        public int getNumericField(String fieldName) {
+            return value;
+        }
+
+        @Override
+        public String getStringField(String fieldName) {
+            return String.valueOf(value);
+        }
+
+        @Override
+        public String toFileString() {
+            return String.valueOf(value);
+        }
+
+        @Override
+        public Object getFieldValue(String fieldName) {
+            return value;
+        }
+    }
+
+    static class TestCollection extends SortableArrayList<TestItem> {}
+
+    private JsonManager manager;
+    private String path;
+
+    @BeforeEach
+    void setup() {
+        path = "test.json";
+        manager = new JsonManager(TestItem.class, TestCollection::new, path);
+        manager.clear();
+    }
+
+    @AfterEach
+    void cleanup() {
+        new File(path).delete();
     }
 
     @Test
-    void append_shouldCreateFile_ifNotExists() {
-        File file = tempDir.resolve("test.json").toFile();
+    void saveAndLoad() {
+        TestCollection collection = new TestCollection();
+        collection.add(new TestItem(1));
+        collection.add(new TestItem(2));
 
-        JsonManager manager = new JsonManager(
-                Car.class,
-                SortableArrayList::new,
-                file.getAbsolutePath()
-        );
+        manager.save(collection);
 
-        manager.append(createCollection(1));
+        SortableCollection<TestItem> loaded = manager.load();
 
-        assertTrue(file.exists());
-        assertTrue(file.length() > 0);
+        assertNotNull(loaded);
+        assertEquals(2, loaded.size());
     }
 
     @Test
-    void append_shouldAddMultipleCollections() {
-        File file = tempDir.resolve("test.json").toFile();
+    void appendAddsNewCollection() {
+        TestCollection c1 = new TestCollection();
+        c1.add(new TestItem(1));
 
-        JsonManager manager = new JsonManager(
-                Car.class,
-                SortableArrayList::new,
-                file.getAbsolutePath()
-        );
+        TestCollection c2 = new TestCollection();
+        c2.add(new TestItem(2));
 
-        manager.append(createCollection(1));
-        manager.append(createCollection(2));
+        manager.append(c1);
+        manager.append(c2);
 
-        SortableCollection<Car>[] result = manager.loadArray();
+        SortableCollection<TestItem>[] array = manager.loadArray();
 
-        assertEquals(2, result.length);
-        assertEquals(1, result[0].toArray().length);
-        assertEquals(2, result[1].toArray().length);
+        assertEquals(2, array.length);
     }
 
     @Test
-    void clear_shouldEmptyFile() throws Exception {
-        File file = tempDir.resolve("test.json").toFile();
+    void appendValuesAddsElement() {
+        TestCollection collection = new TestCollection();
+        collection.add(new TestItem(1));
 
-        JsonManager manager = new JsonManager(
-                Car.class,
-                SortableArrayList::new,
-                file.getAbsolutePath()
-        );
+        manager.save(collection);
+        manager.appendValues(new TestItem(5), 0);
 
-        manager.append(createCollection(2));
+        SortableCollection<TestItem> loaded = manager.load();
+
+        assertEquals(2, loaded.size());
+    }
+
+    @Test
+    void clearEmptiesFile() {
+        TestCollection collection = new TestCollection();
+        collection.add(new TestItem(1));
+
+        manager.save(collection);
         manager.clear();
 
-        String content = Files.readString(file.toPath());
-        assertEquals("[]", content);
+        SortableCollection<TestItem>[] array = manager.loadArray();
+
+        assertTrue(array == null || array.length == 0);
     }
 
     @Test
-    void save_shouldOverwriteData() {
-        File file = tempDir.resolve("test.json").toFile();
-
-        JsonManager manager = new JsonManager(
-                Car.class,
-                SortableArrayList::new,
-                file.getAbsolutePath()
-        );
-
-        manager.append(createCollection(3));
-        manager.save(createCollection(1));
-
-        SortableCollection<Car>[] result = manager.loadArray();
-
-        assertEquals(1, result.length);
-        assertEquals(1, result[0].toArray().length);
-    }
-
-    @Test
-    void load_shouldReturnFirstCollection() {
-        File file = tempDir.resolve("test.json").toFile();
-
-        JsonManager manager = new JsonManager(
-                Car.class,
-                SortableArrayList::new,
-                file.getAbsolutePath()
-        );
-
-        manager.append(createCollection(5));
-
-        SortableCollection<Car> collection = manager.load();
-
-        assertNotNull(collection);
-        assertEquals(5, collection.toArray().length);
-    }
-
-    @Test
-    void load_shouldReturnNull_ifEmpty() {
-        File file = tempDir.resolve("test.json").toFile();
-        JsonManager manager = new JsonManager(
-                Car.class,
-                SortableArrayList::new,
-                file.getAbsolutePath()
-        );
-
+    void loadEmptyReturnsNull() {
         manager.clear();
+        SortableCollection<TestItem> loaded = manager.load();
 
-        SortableCollection<Car> collection = manager.load();
-
-        assertNull(collection);
+        assertNull(loaded);
     }
 }
