@@ -4,16 +4,14 @@ import org.example.File.FileSaver;
 import org.example.Collection.SortableArrayList;
 import org.example.Collection.SortableCollection;
 import org.example.Entity.Sortable;
-import org.example.Fill.DataFiller;
-import org.example.Fill.FileFiller;
-import org.example.Fill.ManualFiller;
-import org.example.Fill.RandomFiller;
+import org.example.File.JsonManager;
+import org.example.Fill.*;
 import org.example.Parallel.ParallelCounter;
 import org.example.Sort.EvenOddSortStrategy;
 import org.example.Sort.SortByNumericFieldStrategy;
 import org.example.Sort.SortByStringFieldStrategy;
 import org.example.Sort.SortStrategy;
-
+import org.example.Entity.Car;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -100,6 +98,7 @@ public class Menu {
             System.out.println((i + 1) + ". " + fillers.get(i).getName());
         }
         System.out.println((fillers.size() + 1) + ". Из файла");
+        System.out.println((fillers.size() + 2) + ". Из json-файла");
         System.out.println("0. Вернуться в главное меню");
 
         System.out.print("Выберите способ: ");
@@ -130,6 +129,29 @@ public class Menu {
                 java.nio.file.Path path = java.nio.file.Paths.get(filename);
                 if (java.nio.file.Files.exists(path) && !java.nio.file.Files.isDirectory(path)) {
                     filler = new FileFiller(filename);
+                    break;
+                } else {
+                    System.out.println("Файл не найден: " + filename);
+                    System.out.println("Проверьте имя файла и попробуйте снова.");
+                }
+            }
+        } else if (choice == fillers.size() + 2) {
+            while (true) {
+                System.out.print("Введите имя файла (для выхода введите 0): ");
+                String filename = scanner.nextLine().trim();
+
+                if (filename.equals("0")) {
+                    System.out.println("Возврат в главное меню");
+                    return;
+                }
+
+                if (filename.isEmpty()) {
+                    System.out.println("Имя файла не может быть пустым");
+                    continue;
+                }
+                java.nio.file.Path path = java.nio.file.Paths.get(filename);
+                if (java.nio.file.Files.exists(path) && !java.nio.file.Files.isDirectory(path)) {
+                    filler = new JsonCarFiller(filename);
                     break;
                 } else {
                     System.out.println("Файл не найден: " + filename);
@@ -207,6 +229,25 @@ public class Menu {
             return;
         }
 
+        // Выбор формата сохранения
+        System.out.println("\nВыберите формат сохранения:");
+        System.out.println("1. TXT");
+        System.out.println("2. JSON");
+        System.out.println("0. Вернуться в главное меню");
+        System.out.print("Выбор: ");
+
+        int formatChoice = readInt();
+        if (formatChoice == 0) {
+            System.out.println("Возврат в главное меню");
+            return;
+        }
+        if (formatChoice != 1 && formatChoice != 2) {
+            System.out.println("Неверный выбор. Сохранение отменено.");
+            return;
+        }
+
+        boolean isJson = (formatChoice == 2);
+
         System.out.print("Введите имя файла (для выхода введите 0): ");
         String filename = scanner.nextLine().trim();
         if (filename.equals("0")) {
@@ -218,6 +259,12 @@ public class Menu {
             return;
         }
 
+        // Добавляем расширение, если его нет
+        if (isJson && !filename.toLowerCase().endsWith(".json")) {
+            filename = filename + ".json";
+        } else if (!isJson && !filename.toLowerCase().endsWith(".txt")) {
+            filename = filename + ".txt";
+        }
 
         boolean fileExists = java.nio.file.Files.exists(java.nio.file.Paths.get(filename));
 
@@ -246,19 +293,35 @@ public class Menu {
             }
         }
 
-        FileSaver fileSaver = new FileSaver();
         boolean success;
+        String formatName = isJson ? "JSON" : "TXT";
 
-        if (mode.equals("перезапись") || (!fileExists)) {
-            success = fileSaver.writeValues(filename, currentCollection);
-        } else {
-            success = fileSaver.append(filename, currentCollection);
-        }
+        if (isJson) {
+            // Сохранение через JsonManager
+            JsonManager jsonManager = new JsonManager(Car.class, SortableArrayList::new, filename);
 
-        if (success) {
-            System.out.println("Коллекция сохранена в файл: " + filename + " (режим: " + mode + ")");
+            if (mode.equals("перезапись") || (!fileExists)) {
+                jsonManager.save(currentCollection);
+            } else {
+                jsonManager.append(currentCollection);
+            }
+            success = true; // JsonManager выбрасывает исключения при ошибках, поэтому если дошли сюда - успех
+            System.out.println("Коллекция сохранена в файл: " + filename + " (формат: " + formatName + ", режим: " + mode + ")");
         } else {
-            System.out.println("Ошибка при сохранении в файл: " + filename);
+            // Сохранение через FileSaver
+            FileSaver fileSaver = new FileSaver();
+
+            if (mode.equals("перезапись") || (!fileExists)) {
+                success = fileSaver.writeValues(filename, currentCollection);
+            } else {
+                success = fileSaver.append(filename, currentCollection);
+            }
+
+            if (success) {
+                System.out.println("Коллекция сохранена в файл: " + filename + " (формат: " + formatName + ", режим: " + mode + ")");
+            } else {
+                System.out.println("Ошибка при сохранении в файл: " + filename);
+            }
         }
     }
 

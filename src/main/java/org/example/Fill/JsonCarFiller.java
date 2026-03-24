@@ -23,14 +23,15 @@ public class JsonCarFiller implements DataFiller {
         this.factory = factory;
     }
 
-    public SortableArrayList<Sortable> fill(int lenght){
+    public SortableArrayList<Sortable> fill(int length){
         SortableArrayList<Sortable> collection = new SortableArrayList<>();
         JsonManager json = new JsonManager(Car.class, SortableArrayList::new, filename);
         json.load().stream()
-                .limit(lenght)
+                .limit(length)
                 .forEach(collection::add);
 
         return collection;
     }
+
 
 }

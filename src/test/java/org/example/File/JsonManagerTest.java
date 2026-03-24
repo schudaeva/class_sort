@@ -36,6 +36,26 @@ class JsonManagerTest {
         }
 
         @Override
+        public boolean isValid() {
+            return Sortable.super.isValid();
+        }
+
+        @Override
+        public String[] getAvailableNumericFields() {
+            return Sortable.super.getAvailableNumericFields();
+        }
+
+        @Override
+        public String[] getAvailableStringFields() {
+            return Sortable.super.getAvailableStringFields();
+        }
+
+        @Override
+        public Sortable copy() {
+            return null;
+        }
+
+        @Override
         public Object getFieldValue(String fieldName) {
             return value;
         }
