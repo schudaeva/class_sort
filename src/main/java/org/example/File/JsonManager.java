@@ -89,10 +89,15 @@ public class JsonManager {
 
     public void appendValues(Sortable entity, int indexCollection){
         SortableCollection<Sortable>[] array = loadArray();
-        SortableCollection<Sortable> collection = array[indexCollection];
-        collection.add(entity);
-        array[indexCollection] = collection;
-        write(array);
+        if(array.length > indexCollection){
+            SortableCollection<Sortable> collection = array[indexCollection];
+            collection.add(entity);
+            array[indexCollection] = collection;
+            write(array);
+        } else{
+            System.err.println("Не удалось найти коллекцию с номером " + indexCollection);
+        }
+
     }
 
     public <T extends Sortable> SortableCollection<T>[] loadArray() {
@@ -106,7 +111,7 @@ public class JsonManager {
         try {
             return (SortableCollection<T>) loadArray()[0];
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("Не удалось загрузить коллекцию" + e);
+            System.err.println("Не удалось загрузить коллекцию");
             return null;
         }
 
