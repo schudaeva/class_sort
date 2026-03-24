@@ -78,9 +78,6 @@ public class Car implements Sortable{
     public String getModel() { return model; }
     public int getYear() { return year; }
 
-
-
-
     public static class Builder {
         private int power;
         private String model;
