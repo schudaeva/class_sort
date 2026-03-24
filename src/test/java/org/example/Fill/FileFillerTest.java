@@ -65,7 +65,7 @@ class FileFillerTest {
 
         SortableArrayList<Sortable> result = filler.fill(10);
 
-        assertEquals(3, result.size()); // "bad" строка пропущена
+        assertEquals(3, result.size());
     }
 
     @Test

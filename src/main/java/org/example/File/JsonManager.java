@@ -135,26 +135,4 @@ public class JsonManager {
 
 }
 
-/*  здесь работа с записью лишь одной коллекции. Не массива коллекций, а одной коллекции. Перед продом надо удалить.
-    public <T extends Sortable> void saveCollection(SortableCollection<T> object) {
-
-        try (FileWriter writer = new FileWriter(this.path)) {
-            gson.toJson(object, writer);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public <T extends Sortable> SortableCollection<T> loadCollection() {
-        try (FileReader reader = new FileReader(this.path)) {
-            return gson.fromJson(reader, new TypeToken<SortableCollection<Sortable>>(){}.getType());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
- */
-
-
 

@@ -45,8 +45,8 @@ class ManualFillerTest {
     void fillRetriesOnInvalidInput() {
 
         String input = String.join("\n",
-                "Toyota", "bad_number",  // ошибка
-                "Toyota", "150", "2010"         // корректный ввод
+                "Toyota", "bad_number",
+                "Toyota", "150", "2010"
         );
 
         System.setIn(new ByteArrayInputStream(input.getBytes()));
