@@ -6,7 +6,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import org.example.Collection.SortableCollection;
-import org.example.Entity.Car;
 import org.example.Entity.Sortable;
 
 import java.io.*;
@@ -49,13 +48,9 @@ public class JsonManager {
             throw new RuntimeException(e);
         }
     }
-
     public <T extends Sortable> void save(SortableCollection<T> object) {
-        try (FileWriter writer = new FileWriter(this.path)) {
-            gson.toJson(object, writer);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        clear();
+        append(object);
     }
 
     public void setPath(String path) {
@@ -89,18 +84,16 @@ public class JsonManager {
         SortableCollection<T>[] result = Arrays.copyOf(base, oldLength + 1);
         result[oldLength] = collection;
 
-        try (Writer writer = new FileWriter(file)) {
-            gson.toJson(result, writer);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        write(result);
     }
 
-
-
-
-
-
+    public void appendValues(Sortable entity, int indexCollection){
+        SortableCollection<Sortable>[] array = loadArray();
+        SortableCollection<Sortable> collection = array[indexCollection];
+        collection.add(entity);
+        array[indexCollection] = collection;
+        write(array);
+    }
 
     public <T extends Sortable> SortableCollection<T>[] loadArray() {
         try (FileReader reader = new FileReader(this.path)) {
@@ -119,9 +112,40 @@ public class JsonManager {
 
     }
 
+    private <T extends Sortable> void write(SortableCollection<T>[] collections) {
+
+        File file = new File(this.path);
+
+
+        try (Writer writer = new FileWriter(file)) {
+            gson.toJson(collections, writer);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 
+/*  здесь работа с записью лишь одной коллекции. Не массива коллекций, а одной коллекции. Перед продом надо удалить.
+    public <T extends Sortable> void saveCollection(SortableCollection<T> object) {
+
+        try (FileWriter writer = new FileWriter(this.path)) {
+            gson.toJson(object, writer);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public <T extends Sortable> SortableCollection<T> loadCollection() {
+        try (FileReader reader = new FileReader(this.path)) {
+            return gson.fromJson(reader, new TypeToken<SortableCollection<Sortable>>(){}.getType());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+ */
 
 }
 
