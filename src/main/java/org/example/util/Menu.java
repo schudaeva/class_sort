@@ -2,9 +2,13 @@ package org.example.util;
 
 import org.example.Collection.SortableArrayList;
 import org.example.Collection.SortableCollection;
+import org.example.Entity.Car;
 import org.example.Entity.Sortable;
-import org.example.File.FileSaver;
-import org.example.Fill.*;
+import org.example.File.JsonManager;
+import org.example.Fill.DataFiller;
+import org.example.Fill.JsonCarFiller;
+import org.example.Fill.ManualFiller;
+import org.example.Fill.RandomFiller;
 import org.example.Parallel.ParallelCounter;
 import org.example.Sort.EvenOddSortStrategy;
 import org.example.Sort.SortByNumericFieldStrategy;
@@ -249,20 +253,21 @@ public class Menu {
             }
         }
 
-        FileSaver fileSaver = new FileSaver();
-        boolean success;
+//        FileSaver fileSaver = new FileSaver();
+
+        JsonManager json = new JsonManager(Car.class, SortableArrayList::new, filename);
+
+//        boolean success;
 
         if (mode.equals("перезапись") || (!fileExists)) {
-            success = fileSaver.writeValues(Path.of(filename), currentCollection);
-        } else {
-            success = fileSaver.append(filename, currentCollection);
-        }
+//            success = fileSaver.writeValues(Path.of(filename), currentCollection);
+            json.save(currentCollection);
 
-        if (success) {
-            System.out.println("Коллекция сохранена в файл: " + filename + " (режим: " + mode + ")");
         } else {
-            System.out.println("Ошибка при сохранении в файл: " + filename);
+//            success = fileSaver.append(filename, currentCollection);
+            json.append(currentCollection);
         }
+        System.out.println("Коллекция сохранена в файл: " + filename + " (режим: " + mode + ")");
     }
 
     private void handleCount() {
