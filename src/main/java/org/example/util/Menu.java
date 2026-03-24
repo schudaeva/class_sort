@@ -4,10 +4,7 @@ import org.example.Collection.SortableArrayList;
 import org.example.Collection.SortableCollection;
 import org.example.Entity.Sortable;
 import org.example.File.FileSaver;
-import org.example.Fill.DataFiller;
-import org.example.Fill.FileFiller;
-import org.example.Fill.ManualFiller;
-import org.example.Fill.RandomFiller;
+import org.example.Fill.*;
 import org.example.Parallel.ParallelCounter;
 import org.example.Sort.EvenOddSortStrategy;
 import org.example.Sort.SortByNumericFieldStrategy;
@@ -133,7 +130,7 @@ public class Menu {
                 }
                 Path path = Paths.get(filename);
                 if (Files.exists(path) && !Files.isDirectory(path)) {
-                    filler = new FileFiller(filename);
+                    filler = new JsonCarFiller(filename);
                     break;
                 } else {
                     System.out.println("Файл не найден: " + filename);

@@ -1,9 +1,7 @@
 package org.example.Fill;
 
 import org.example.Collection.SortableArrayList;
-import org.example.Entity.Car;
 import org.example.Entity.Sortable;
-import org.example.File.JsonManager;
 import org.example.util.CarFactory;
 import org.example.util.SortableFactory;
 
@@ -28,8 +26,8 @@ public class FileFiller implements DataFiller {
         this.factory = factory;
     }
 
-//    @Override
-    public SortableArrayList<Sortable> fill2(int length) {
+    @Override
+    public SortableArrayList<Sortable> fill(int length) {
         Path path = Paths.get(filename);
         if (!Files.exists(path)) {
             throw new IllegalArgumentException("Файл не найден: " + filename);
@@ -46,18 +44,6 @@ public class FileFiller implements DataFiller {
             throw new RuntimeException("Ошибка чтения файла:" + filename, e);
         }
     }
-
-
-    public SortableArrayList<Sortable> fill(int lenght){
-        SortableArrayList<Sortable> collection = new SortableArrayList<>();
-        JsonManager json = new JsonManager(Car.class, SortableArrayList::new, filename);
-        json.load().stream()
-                .limit(lenght)
-                .forEach(collection::add);
-
-        return collection;
-    }
-
 
     // Безопасное преобразование строки в объект, при ошибке возвращает null
     private Sortable safeParseLine(String line) {
